@@ -15,26 +15,27 @@ pub struct Game {
 }
 
 impl Game {
-    pub fn game_tick(&mut self, pointer: &PointerState) {
-        if self.paused {
-            return;
-        }
+    pub fn game_tick(&mut self, clicked_pos: Option<(usize, usize)>) {
+        if !self.paused {
+            self.tick += 1;
 
-        self.tick += 1;
+            let mut new_board = Game::empty_board();
 
-        let mut new_board = Game::empty_board();
-
-        //Optimisation, replace with for loop i=0
-        for x in 1..consts::BOARD_SIZE - 1 {
-            for y in 1..consts::BOARD_SIZE - 1 {
-                let is_alive = self.board[x][y].0;
-                let alive_neighbours = cell::Cell::alive_neighbours(&self.board, x, y);
-                let next_state = cell::Cell::will_stay_alive(is_alive, alive_neighbours);
-                new_board[x][y] = cell::Cell(next_state);
+            //Optimisation, replace with for loop i=0
+            for x in 1..consts::BOARD_SIZE - 1 {
+                for y in 1..consts::BOARD_SIZE - 1 {
+                    let is_alive = self.board[x][y].0;
+                    let alive_neighbours = cell::Cell::alive_neighbours(&self.board, x, y);
+                    let next_state = cell::Cell::will_stay_alive(is_alive, alive_neighbours);
+                    new_board[x][y] = cell::Cell(next_state);
+                }
+            }
+            self.board = new_board;
+        } else {
+            if let Some(pos) = clicked_pos {
+                self.board[pos.0][pos.1] = cell::Cell(true);
             }
         }
-
-        self.board = new_board;
     }
 
     pub fn paint(&mut self, painter: &Painter, mouse_pos: Option<Pos2>) {

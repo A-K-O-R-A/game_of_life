@@ -63,7 +63,15 @@ impl eframe::App for game::Game {
 
             //Game update
             let start_tick = Instant::now();
-            self.game_tick(&PointerState::default());
+            let mut hovered_cell_pos = self.mouse_hover(hover_pos);
+
+            if hovered_cell_pos != None {
+                if !ui.input().pointer.primary_clicked() {
+                    hovered_cell_pos = None;
+                }
+            }
+
+            self.game_tick(hovered_cell_pos);
             println!("Tick {:.2?}", start_tick.elapsed());
         });
     }
