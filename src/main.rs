@@ -29,7 +29,7 @@ impl eframe::App for game::Game {
             //ui.heading("Try to close the window");
 
             ui.horizontal(|ui| {
-                ui.label("Your name: ");
+                ui.label(format!("Tick: {}", self.tick));
                 ui.add(egui::Slider::new(&mut self.zoom_level, 0.1..=10.).text("Zoom"));
 
                 ui.checkbox(&mut self.paused, "Pause");
