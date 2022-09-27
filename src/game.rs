@@ -37,10 +37,10 @@ impl Game {
     pub fn paint(&mut self, painter: &Painter) {
         let mut shapes: Vec<Shape> = Vec::new();
 
-        let rect = painter.clip_rect();
+        let clip_rect = painter.clip_rect();
         let _to_screen = emath::RectTransform::from_to(
-            Rect::from_center_size(Pos2::ZERO, rect.square_proportions() / self.zoom_level),
-            rect,
+            Rect::from_center_size(Pos2::ZERO, clip_rect.square_proportions() / self.zoom_level),
+            clip_rect,
         );
 
         let test_rect = Shape::rect_filled(
@@ -52,7 +52,15 @@ impl Game {
 
         for x in 1..BOARD_SIZE - 1 {
             for y in 1..BOARD_SIZE - 1 {
-                shapes.push(self.board[x][y].to_shape(x, y))
+                let cell = self.board[x][y];
+                let rect = cell.to_rect(x, y);
+
+                // culling
+                if clip_rect.intersects(rect) {
+                    let shape = Shape::rect_filled(rect, Rounding::none(), cell.color());
+                    shapes.push(shape);
+                }
+                //shapes.push(cell.to_shape(x, y))
             }
         }
 
@@ -68,11 +76,11 @@ impl Game {
             }
         };
 
-        let mut paint_rect = |points: [Pos2; 2], color: Color32| {
+        let mut paint_rect = |rect: Rect, color: Color32| {
             let line = [to_screen * points[0], to_screen * points[1]];
 
             // culling
-            if rect.intersects(Rect::from_two_pos(line[0], line[1])) {
+            if clip_rect.intersects(rect) {
                 shapes.push(Shape::line_segment(line, (width, color)));
             }
         };
@@ -88,7 +96,13 @@ impl Game {
     }
 
     pub fn empty_board() -> Board {
-        [[cell::Cell::default(); BOARD_SIZE]; BOARD_SIZE]
+        let mut board = [[cell::Cell::default(); BOARD_SIZE]; BOARD_SIZE];
+
+        board[20][20] = cell::Cell(true);
+        board[20][21] = cell::Cell(true);
+        board[20][22] = cell::Cell(true);
+
+        board
     }
 }
 
