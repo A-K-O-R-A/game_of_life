@@ -29,10 +29,19 @@ impl eframe::App for game::Game {
             //ui.heading("Try to close the window");
 
             ui.horizontal(|ui| {
-                ui.label(format!("Tick: {}", self.tick));
-                ui.add(egui::Slider::new(&mut self.zoom_level, 0.1..=10.).text("Zoom"));
+                ui.vertical(|ui| {
+                    ui.add(egui::Slider::new(&mut self.zoom_level, 0.1..=10.).text("Zoom"))
+                        .on_hover_text("A bit buggy");
+                    ui.add(egui::Slider::new(&mut self.tps, 1..=200).text("TPS"))
+                        .on_hover_text("Not yet implemented");
+                });
 
-                ui.checkbox(&mut self.paused, "Pause");
+                ui.vertical(|ui| {
+                    ui.label(format!("Tick: {}", self.tick))
+                        .on_hover_text("The generation counter");
+                    ui.checkbox(&mut self.paused, "Pause")
+                        .on_hover_text("Pause the game, equals 0 TPS");
+                });
 
                 if ui.button("Close").clicked() {
                     frame.close();
