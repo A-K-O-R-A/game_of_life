@@ -16,6 +16,10 @@ pub struct Game {
 
 impl Game {
     pub fn game_tick(&mut self) {
+        if self.paused {
+            return;
+        }
+
         self.tick += 1;
 
         let mut new_board = Game::empty_board();

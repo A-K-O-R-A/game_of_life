@@ -32,6 +32,8 @@ impl eframe::App for game::Game {
                 ui.label("Your name: ");
                 ui.add(egui::Slider::new(&mut self.zoom_level, 0.1..=10.).text("Zoom"));
 
+                ui.checkbox(&mut self.paused, "Pause");
+
                 if ui.button("Close").clicked() {
                     frame.close();
                 }
