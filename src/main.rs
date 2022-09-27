@@ -21,9 +21,14 @@ impl eframe::App for game::Game {
         true
     }
 
-    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+    fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+        println!("\x1B[2J\x1B[1;1H");
+
         egui::CentralPanel::default().show(ctx, |ui| {
             //ui.heading("Try to close the window");
+            if ui.button("Yes!").clicked() {
+                frame.close();
+            }
 
             let painter = egui::Painter::new(
                 ui.ctx().clone(),
@@ -31,11 +36,13 @@ impl eframe::App for game::Game {
                 ui.available_rect_before_wrap(),
             );
 
+            let start_paint = Instant::now();
             self.paint(&painter);
+            println!("Paint {:.2?}", start_paint.elapsed());
         });
 
-        //let start = Instant::now();
+        let start_tick = Instant::now();
         self.game_tick();
-        //println!("Elapsed {:.2?}", start.elapsed());
+        println!("Tick {:.2?}", start_tick.elapsed());
     }
 }

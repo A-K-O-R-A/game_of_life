@@ -2,6 +2,9 @@ use egui::*;
 
 use crate::game;
 
+pub const CELL_SIZE: usize = 5;
+pub const CELL_BORDER_SIZE: usize = 1;
+
 #[derive(Debug, Copy, Clone)]
 pub struct Cell(pub bool);
 impl Cell {
@@ -9,18 +12,19 @@ impl Cell {
         self.0
     }
 
-    pub fn to_shape(&self, x: usize, y: usize, size: usize) -> Shape {
+    pub fn to_shape(&self, x: usize, y: usize) -> Shape {
+        let top_left = Pos2 {
+            x: (x * CELL_SIZE + x * CELL_BORDER_SIZE) as f32,
+            y: (y * CELL_SIZE + y * CELL_BORDER_SIZE) as f32,
+        };
+
+        let bottom_right = Pos2 {
+            x: (top_left.x + (CELL_SIZE as f32)),
+            y: (top_left.y + (CELL_SIZE as f32)),
+        };
+
         Shape::rect_filled(
-            Rect::from_two_pos(
-                Pos2 {
-                    x: (x * size) as f32,
-                    y: (y * size) as f32,
-                },
-                Pos2 {
-                    x: (x + size) as f32,
-                    y: (y + size) as f32,
-                },
-            ),
+            Rect::from_two_pos(top_left, bottom_right),
             Rounding::none(),
             if self.alive() {
                 Color32::LIGHT_GRAY

@@ -3,6 +3,7 @@ use egui::*;
 use crate::cell;
 
 pub const BOARD_SIZE: usize = 200;
+
 pub type Board = [[cell::Cell; BOARD_SIZE]; BOARD_SIZE];
 
 #[allow(dead_code)]
@@ -37,21 +38,21 @@ impl Game {
         let mut shapes: Vec<Shape> = Vec::new();
 
         let rect = painter.clip_rect();
-        let to_screen = emath::RectTransform::from_to(
+        let _to_screen = emath::RectTransform::from_to(
             Rect::from_center_size(Pos2::ZERO, rect.square_proportions() / self.zoom_level),
             rect,
         );
 
         let test_rect = Shape::rect_filled(
-            Rect::from_two_pos(Pos2::ZERO, Pos2 { x: 100., y: 100. }),
-            Rounding::same(30.),
-            Color32::LIGHT_GRAY,
+            Rect::from_two_pos(Pos2::ZERO, pos2(10000., 10000.)),
+            Rounding::none(),
+            Color32::WHITE,
         );
         shapes.push(test_rect);
 
         for x in 1..BOARD_SIZE - 1 {
             for y in 1..BOARD_SIZE - 1 {
-                shapes.push(self.board[x][y].to_shape(x, y, 10))
+                shapes.push(self.board[x][y].to_shape(x, y))
             }
         }
 
