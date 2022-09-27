@@ -4,7 +4,7 @@ pub mod cell;
 pub mod consts;
 pub mod game;
 
-use eframe::egui::{self, PointerState};
+use eframe::egui::{self};
 use std::time::Instant;
 
 #[allow(arithmetic_overflow)]
