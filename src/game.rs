@@ -1,10 +1,9 @@
 use egui::*;
 
 use crate::cell;
+use crate::consts;
 
-pub const BOARD_SIZE: usize = 200;
-
-pub type Board = [[cell::Cell; BOARD_SIZE]; BOARD_SIZE];
+pub type Board = [[cell::Cell; consts::BOARD_SIZE]; consts::BOARD_SIZE];
 
 #[allow(dead_code)]
 pub struct Game {
@@ -22,8 +21,8 @@ impl Game {
         let mut new_board = Game::empty_board();
 
         //Optimisation, replace with for loop i=0
-        for x in 1..BOARD_SIZE - 1 {
-            for y in 1..BOARD_SIZE - 1 {
+        for x in 1..consts::BOARD_SIZE - 1 {
+            for y in 1..consts::BOARD_SIZE - 1 {
                 let is_alive = self.board[x][y].0;
                 let alive_neighbours = cell::Cell::alive_neighbours(&self.board, x, y);
                 let next_state = cell::Cell::will_stay_alive(is_alive, alive_neighbours);
@@ -43,15 +42,11 @@ impl Game {
             clip_rect,
         );
 
-        let test_rect = Shape::rect_filled(
-            Rect::from_two_pos(Pos2::ZERO, pos2(10000., 10000.)),
-            Rounding::none(),
-            Color32::WHITE,
-        );
-        shapes.push(test_rect);
+        let background = Shape::rect_filled(clip_rect, Rounding::none(), consts::BACKGROUND_COLOR);
+        shapes.push(background);
 
-        for x in 1..BOARD_SIZE - 1 {
-            for y in 1..BOARD_SIZE - 1 {
+        for x in 1..consts::BOARD_SIZE - 1 {
+            for y in 1..consts::BOARD_SIZE - 1 {
                 let cell = self.board[x][y];
                 let rect = cell.to_rect(x, y);
 
@@ -64,39 +59,11 @@ impl Game {
             }
         }
 
-        //shapes.push(Shape::line_segment(line, (width, color)));
-
-        /*
-        let mut paint_line = |points: [Pos2; 2], color: Color32, width: f32| {
-            let line = [to_screen * points[0], to_screen * points[1]];
-
-            // culling
-            if rect.intersects(Rect::from_two_pos(line[0], line[1])) {
-                shapes.push(Shape::line_segment(line, (width, color)));
-            }
-        };
-
-        let mut paint_rect = |rect: Rect, color: Color32| {
-            let line = [to_screen * points[0], to_screen * points[1]];
-
-            // culling
-            if clip_rect.intersects(rect) {
-                shapes.push(Shape::line_segment(line, (width, color)));
-            }
-        };
-
-        paint_line(
-            [Pos2 { x: 0., y: 0. }, Pos2 { x: 100., y: 100. }],
-            Color32::BLACK,
-            10.,
-        );
-        */
-
         painter.extend(shapes);
     }
 
     pub fn empty_board() -> Board {
-        let mut board = [[cell::Cell::default(); BOARD_SIZE]; BOARD_SIZE];
+        let mut board = [[cell::Cell::default(); consts::BOARD_SIZE]; consts::BOARD_SIZE];
 
         board[20][20] = cell::Cell(true);
         board[20][21] = cell::Cell(true);

@@ -1,9 +1,7 @@
 use egui::*;
 
+use crate::consts;
 use crate::game;
-
-pub const CELL_SIZE: usize = 5;
-pub const CELL_BORDER_SIZE: usize = 1;
 
 #[derive(Debug, Copy, Clone)]
 pub struct Cell(pub bool);
@@ -22,13 +20,13 @@ impl Cell {
 
     pub fn to_rect(&self, x: usize, y: usize) -> Rect {
         let top_left = Pos2 {
-            x: (x * CELL_SIZE + x * CELL_BORDER_SIZE) as f32,
-            y: (y * CELL_SIZE + y * CELL_BORDER_SIZE) as f32,
+            x: (x * consts::CELL_SIZE + x * consts::CELL_BORDER_SIZE) as f32,
+            y: (y * consts::CELL_SIZE + y * consts::CELL_BORDER_SIZE) as f32,
         };
 
         let bottom_right = Pos2 {
-            x: (top_left.x + (CELL_SIZE as f32)),
-            y: (top_left.y + (CELL_SIZE as f32)),
+            x: (top_left.x + (consts::CELL_SIZE as f32)),
+            y: (top_left.y + (consts::CELL_SIZE as f32)),
         };
 
         Rect::from_two_pos(top_left, bottom_right)
