@@ -15,7 +15,7 @@ pub struct Game {
 }
 
 impl Game {
-    pub fn game_tick(&mut self) {
+    pub fn game_tick(&mut self, pointer: &PointerState) {
         if self.paused {
             return;
         }
@@ -37,8 +37,10 @@ impl Game {
         self.board = new_board;
     }
 
-    pub fn paint(&mut self, painter: &Painter) {
-        let mut shapes: Vec<Shape> = Vec::new();
+    pub fn paint(&mut self, painter: &Painter, mouse_pos: Option<Pos2>) {
+        //Stop vector from reallocating
+        let mut shapes: Vec<Shape> =
+            Vec::with_capacity(consts::BOARD_SIZE * consts::BOARD_SIZE + 1);
 
         let clip_rect = painter.clip_rect();
         let _to_screen = emath::RectTransform::from_to(
@@ -49,6 +51,8 @@ impl Game {
         let background = Shape::rect_filled(clip_rect, Rounding::none(), consts::BACKGROUND_COLOR);
         shapes.push(background);
 
+        let hovered_cell = self.mouse_hover(mouse_pos);
+
         for x in 1..consts::BOARD_SIZE - 1 {
             for y in 1..consts::BOARD_SIZE - 1 {
                 let cell = self.board[x][y];
@@ -56,7 +60,17 @@ impl Game {
 
                 // culling
                 if clip_rect.intersects(rect) {
-                    let shape = Shape::rect_filled(rect, Rounding::none(), cell.color());
+                    let mut color = cell.color();
+
+                    if hovered_cell == Some((x, y)) {
+                        if cell.alive() {
+                            color = Color32::RED;
+                        } else {
+                            color = Color32::DARK_RED;
+                        }
+                    }
+
+                    let shape = Shape::rect_filled(rect, Rounding::none(), color);
                     shapes.push(shape);
                 }
                 //shapes.push(cell.to_shape(x, y))
@@ -66,12 +80,29 @@ impl Game {
         painter.extend(shapes);
     }
 
+    ///Returns the board indices of a cell if it is hovered
+    pub fn mouse_hover(&self, mouse_pos: Option<Pos2>) -> Option<(usize, usize)> {
+        match mouse_pos {
+            Some(pos) => {
+                let x = (pos.x / (consts::CELL_SIZE + consts::CELL_BORDER_SIZE)) as usize;
+                let y = (pos.y / (consts::CELL_SIZE + consts::CELL_BORDER_SIZE)) as usize;
+
+                if x > consts::BOARD_SIZE || y > consts::BOARD_SIZE {
+                    return None;
+                }
+
+                Some((x, y))
+            }
+            None => None,
+        }
+    }
+
     pub fn empty_board() -> Board {
         let mut board = [[cell::Cell::default(); consts::BOARD_SIZE]; consts::BOARD_SIZE];
 
-        board[20][20] = cell::Cell(true);
-        board[20][21] = cell::Cell(true);
-        board[20][22] = cell::Cell(true);
+        board[10][10] = cell::Cell(true);
+        board[10][11] = cell::Cell(true);
+        board[10][12] = cell::Cell(true);
 
         board
     }

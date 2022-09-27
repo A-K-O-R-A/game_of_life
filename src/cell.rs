@@ -20,8 +20,8 @@ impl Cell {
 
     pub fn to_rect(&self, x: f32, y: f32, zoom_level: f32) -> Rect {
         let top_left = Pos2 {
-            x: (x * consts::CELL_SIZE + x * consts::CELL_BORDER_SIZE) * zoom_level,
-            y: (y * consts::CELL_SIZE + y * consts::CELL_BORDER_SIZE) * zoom_level,
+            x: (x * (consts::CELL_SIZE + consts::CELL_BORDER_SIZE)) * zoom_level,
+            y: (y * (consts::CELL_SIZE + consts::CELL_BORDER_SIZE)) * zoom_level,
         };
 
         let bottom_right = Pos2 {

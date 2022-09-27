@@ -4,7 +4,7 @@ pub mod cell;
 pub mod consts;
 pub mod game;
 
-use eframe::egui;
+use eframe::egui::{self, PointerState};
 use std::time::Instant;
 
 #[allow(arithmetic_overflow)]
@@ -54,13 +54,17 @@ impl eframe::App for game::Game {
                 ui.available_rect_before_wrap(),
             );
 
-            let start_paint = Instant::now();
-            self.paint(&painter);
-            println!("Paint {:.2?}", start_paint.elapsed());
-        });
+            let hover_pos = ui.input().pointer.hover_pos();
+            //let pointer = &PointerState::default();
 
-        let start_tick = Instant::now();
-        self.game_tick();
-        println!("Tick {:.2?}", start_tick.elapsed());
+            let start_paint = Instant::now();
+            self.paint(&painter, hover_pos);
+            println!("Paint {:.2?}", start_paint.elapsed());
+
+            //Game update
+            let start_tick = Instant::now();
+            self.game_tick(&PointerState::default());
+            println!("Tick {:.2?}", start_tick.elapsed());
+        });
     }
 }
