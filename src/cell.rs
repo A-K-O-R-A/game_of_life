@@ -18,22 +18,18 @@ impl Cell {
         }
     }
 
-    pub fn to_rect(&self, x: f32, y: f32) -> Rect {
+    pub fn to_rect(&self, x: f32, y: f32, zoom_level: f32) -> Rect {
         let top_left = Pos2 {
-            x: (x * consts::CELL_SIZE + x * consts::CELL_BORDER_SIZE),
-            y: (y * consts::CELL_SIZE + y * consts::CELL_BORDER_SIZE),
+            x: (x * consts::CELL_SIZE + x * consts::CELL_BORDER_SIZE) * zoom_level,
+            y: (y * consts::CELL_SIZE + y * consts::CELL_BORDER_SIZE) * zoom_level,
         };
 
         let bottom_right = Pos2 {
-            x: (top_left.x + (consts::CELL_SIZE)),
-            y: (top_left.y + (consts::CELL_SIZE)),
+            x: (top_left.x + consts::CELL_SIZE) * zoom_level,
+            y: (top_left.y + consts::CELL_SIZE) * zoom_level,
         };
 
         Rect::from_two_pos(top_left, bottom_right)
-    }
-
-    pub fn to_shape(&self, x: f32, y: f32) -> Shape {
-        Shape::rect_filled(self.to_rect(x, y), Rounding::none(), self.color())
     }
 
     ///Returns if a cell will die depending on how many of its neighbours are alive

@@ -8,10 +8,10 @@ pub type Board = [[cell::Cell; consts::BOARD_SIZE]; consts::BOARD_SIZE];
 #[allow(dead_code)]
 pub struct Game {
     board: Board,
-    tps: usize,
-    tick: u128,
-    zoom_level: f32,
-    paused: bool,
+    pub tps: usize,
+    pub tick: u128,
+    pub zoom_level: f32,
+    pub paused: bool,
 }
 
 impl Game {
@@ -48,7 +48,7 @@ impl Game {
         for x in 1..consts::BOARD_SIZE - 1 {
             for y in 1..consts::BOARD_SIZE - 1 {
                 let cell = self.board[x][y];
-                let rect = cell.to_rect((x as f32) * self.zoom_level, (y as f32) * self.zoom_level);
+                let rect = cell.to_rect(x as f32, y as f32, self.zoom_level);
 
                 // culling
                 if clip_rect.intersects(rect) {

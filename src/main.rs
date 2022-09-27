@@ -27,9 +27,15 @@ impl eframe::App for game::Game {
 
         egui::CentralPanel::default().show(ctx, |ui| {
             //ui.heading("Try to close the window");
-            if ui.button("Yes!").clicked() {
-                frame.close();
-            }
+
+            ui.horizontal(|ui| {
+                ui.label("Your name: ");
+                ui.add(egui::Slider::new(&mut self.zoom_level, 0.1..=10.).text("Zoom"));
+
+                if ui.button("Close").clicked() {
+                    frame.close();
+                }
+            });
 
             let painter = egui::Painter::new(
                 ui.ctx().clone(),
