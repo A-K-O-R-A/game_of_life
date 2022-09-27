@@ -18,21 +18,21 @@ impl Cell {
         }
     }
 
-    pub fn to_rect(&self, x: usize, y: usize) -> Rect {
+    pub fn to_rect(&self, x: f32, y: f32) -> Rect {
         let top_left = Pos2 {
-            x: (x * consts::CELL_SIZE + x * consts::CELL_BORDER_SIZE) as f32,
-            y: (y * consts::CELL_SIZE + y * consts::CELL_BORDER_SIZE) as f32,
+            x: (x * consts::CELL_SIZE + x * consts::CELL_BORDER_SIZE),
+            y: (y * consts::CELL_SIZE + y * consts::CELL_BORDER_SIZE),
         };
 
         let bottom_right = Pos2 {
-            x: (top_left.x + (consts::CELL_SIZE as f32)),
-            y: (top_left.y + (consts::CELL_SIZE as f32)),
+            x: (top_left.x + (consts::CELL_SIZE)),
+            y: (top_left.y + (consts::CELL_SIZE)),
         };
 
         Rect::from_two_pos(top_left, bottom_right)
     }
 
-    pub fn to_shape(&self, x: usize, y: usize) -> Shape {
+    pub fn to_shape(&self, x: f32, y: f32) -> Shape {
         Shape::rect_filled(self.to_rect(x, y), Rounding::none(), self.color())
     }
 

@@ -48,7 +48,7 @@ impl Game {
         for x in 1..consts::BOARD_SIZE - 1 {
             for y in 1..consts::BOARD_SIZE - 1 {
                 let cell = self.board[x][y];
-                let rect = cell.to_rect(x, y);
+                let rect = cell.to_rect((x as f32) * self.zoom_level, (y as f32) * self.zoom_level);
 
                 // culling
                 if clip_rect.intersects(rect) {
