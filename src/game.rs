@@ -85,8 +85,12 @@ impl Game {
     pub fn mouse_hover(&self, mouse_pos: Option<Pos2>) -> Option<(usize, usize)> {
         match mouse_pos {
             Some(pos) => {
+                /*
                 let x = (pos.x / (consts::CELL_SIZE + consts::CELL_BORDER_SIZE)) as usize;
                 let y = (pos.y / (consts::CELL_SIZE + consts::CELL_BORDER_SIZE)) as usize;
+                 */
+                let x = ((pos.x / (consts::CELL_SIZE)) / self.zoom_level) as usize;
+                let y = ((pos.y / (consts::CELL_SIZE)) / self.zoom_level) as usize;
 
                 if x > consts::BOARD_SIZE || y > consts::BOARD_SIZE {
                     return None;
