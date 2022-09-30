@@ -70,7 +70,7 @@ impl eframe::App for game::Game {
     }
 
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        println!("\x1B[2J\x1B[1;1H");
+        //println!("\x1B[2J\x1B[1;1H");
 
         egui::CentralPanel::default().show(ctx, |ui| {
             //ui.heading("Try to close the window");
@@ -112,12 +112,17 @@ impl eframe::App for game::Game {
             let start_tick = Instant::now();
             let mut hovered_cell_pos = self.mouse_hover(hover_pos);
 
+            println!("getting hover pos");
+
             if hovered_cell_pos != None {
                 if !ui.input().pointer.primary_clicked() {
                     hovered_cell_pos = None;
                 }
             }
+
+            println!("updating pos");
             self.update_board();
+            println!("updated pos");
 
             println!("Tick {:.2?}", start_tick.elapsed());
         });
