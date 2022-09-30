@@ -1,3 +1,7 @@
+use std::sync::mpsc;
+use std::thread;
+use std::time::Duration;
+
 use egui::*;
 
 use crate::cell;
@@ -12,6 +16,7 @@ pub struct Game {
     pub tick: u128,
     pub zoom_level: f32,
     pub paused: bool,
+    pub receiver: Option<mpsc::Receiver<Board>>,
 }
 
 impl Game {
@@ -38,7 +43,7 @@ impl Game {
         }
     }
 
-    pub fn paint(&mut self, painter: &Painter, mouse_pos: Option<Pos2>) {
+    pub fn paint(&self, painter: &Painter, mouse_pos: Option<Pos2>) {
         //Stop vector from reallocating
         let mut shapes: Vec<Shape> =
             Vec::with_capacity(consts::BOARD_SIZE * consts::BOARD_SIZE + 1);
@@ -111,17 +116,47 @@ impl Game {
 
         board
     }
-}
 
-impl Default for Game {
-    fn default() -> Self {
+    pub fn default() -> Self {
         Game {
             board: Game::empty_board(),
             tps: 1,
             tick: 0,
             zoom_level: 1.,
             paused: false,
+            receiver: None,
         }
+    }
+
+    pub fn init_with_tick_thread() -> Self {
+        let (tx, rx) = mpsc::channel::<Board>();
+
+        let mut game = Game::default();
+        game.receiver = Some(rx);
+
+        thread::spawn(move || {
+            let mut game = Game::default();
+            loop {
+                game.game_tick(None);
+                tx.send(game.board).unwrap();
+                thread::sleep(Duration::from_millis(1000));
+            }
+        });
+
+        game
+    }
+
+    pub fn get_latest_board(&self) -> Board {
+        let rx = self.receiver.as_ref().unwrap();
+        let latest = rx.try_iter().last().unwrap();
+
+        latest
+    }
+
+    pub fn update_board(&mut self) {
+        let new_board = self.get_latest_board();
+
+        self.board = new_board;
     }
 }
 

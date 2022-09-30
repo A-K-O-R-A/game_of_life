@@ -1,5 +1,52 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
 
+/*
+use std::sync::mpsc;
+use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    let tx1 = tx.clone();
+    let hi_from_thread = thread::spawn(move || {
+        let vals = vec![
+            String::from("hi"),
+            String::from("from"),
+            String::from("the"),
+            String::from("thread"),
+        ];
+
+        for val in vals {
+            tx1.send(val).unwrap();
+            thread::sleep(Duration::from_secs(0));
+        }
+    });
+
+    let inf_messages = thread::spawn(move || {
+        let mut counter = 0_u64;
+
+        loop {
+            let s = format!("Counter is: {}", counter);
+            tx.send(s).unwrap();
+            thread::sleep(Duration::from_millis(100));
+            counter += 1;
+        }
+    });
+
+    //handle.join().unwrap();
+
+    thread::sleep(Duration::from_secs(3));
+
+    let latest = rx.try_iter().last().unwrap();
+    println!("Latest: {}", latest);
+
+    for received in rx {
+        println!("Got: {}", received);
+    }
+}
+*/
+
 pub mod cell;
 pub mod consts;
 pub mod game;
@@ -13,7 +60,7 @@ fn main() {
     eframe::run_native(
         "Game of Life",
         options,
-        Box::new(|_cc| Box::new(game::Game::default())),
+        Box::new(|_cc| Box::new(game::Game::init_with_tick_thread())),
     );
 }
 
@@ -70,8 +117,8 @@ impl eframe::App for game::Game {
                     hovered_cell_pos = None;
                 }
             }
+            self.update_board();
 
-            self.game_tick(hovered_cell_pos);
             println!("Tick {:.2?}", start_tick.elapsed());
         });
     }
