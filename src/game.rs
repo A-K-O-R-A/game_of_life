@@ -135,16 +135,14 @@ impl Game {
         game.receiver = Some(rx);
 
         thread::spawn(move || {
-            /*
             let mut game = Game::default();
 
             println!("thread 2");
             loop {
-                //game.game_tick(None);
-                //tx.send(game.board).unwrap();
+                game.game_tick(None);
+                tx.send(game.board).unwrap();
                 thread::sleep(Duration::from_millis(1000));
             }
-             */
         });
 
         game
@@ -173,7 +171,7 @@ impl Game {
     pub fn update_board(&mut self) {
         let new_board = self.get_latest_board();
 
-        //self.board = new_board;
+        self.board = new_board;
     }
 }
 

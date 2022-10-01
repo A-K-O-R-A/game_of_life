@@ -110,15 +110,18 @@ impl eframe::App for game::Game {
 
             //Game update
             let start_tick = Instant::now();
+            /*
             let mut hovered_cell_pos = self.mouse_hover(hover_pos);
 
             println!("getting hover pos");
+
 
             if hovered_cell_pos != None {
                 if !ui.input().pointer.primary_clicked() {
                     hovered_cell_pos = None;
                 }
             }
+             */
 
             println!("updating pos");
             self.update_board();
