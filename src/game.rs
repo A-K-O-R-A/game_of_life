@@ -134,20 +134,17 @@ impl Game {
         let mut game = Game::default();
         game.receiver = Some(rx);
 
-        dbg!("A");
-
         thread::spawn(move || {
+            /*
             let mut game = Game::default();
 
-            dbg!("thread 2");
+            println!("thread 2");
             loop {
-                game.game_tick(None);
-                dbg!("first tick");
-                tx.send(game.board).unwrap();
-                dbg!("first send");
+                //game.game_tick(None);
+                //tx.send(game.board).unwrap();
                 thread::sleep(Duration::from_millis(1000));
-                dbg!("first sleep");
             }
+             */
         });
 
         game
@@ -156,6 +153,14 @@ impl Game {
     pub fn get_latest_board(&self) -> Board {
         let rx = self.receiver.as_ref().unwrap();
         println!("Obtained ref");
+
+        let iter = dbg!(rx.iter());
+
+        println!("- - - - - - - - - -");
+        print!("- uwu -");
+        println!("Try recv: {:?}", rx.recv());
+        println!("- - - - - - - - - -");
+        println!("Iter length: {}", iter.count());
 
         println!("Iter length: {}", rx.try_iter().count());
         let iter = dbg!(rx.try_iter());
@@ -168,7 +173,7 @@ impl Game {
     pub fn update_board(&mut self) {
         let new_board = self.get_latest_board();
 
-        self.board = new_board;
+        //self.board = new_board;
     }
 }
 
