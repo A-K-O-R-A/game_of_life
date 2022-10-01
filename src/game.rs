@@ -16,7 +16,7 @@ pub struct Game {
     pub tick: u128,
     pub zoom_level: f32,
     pub paused: bool,
-    pub receiver: Option<mpsc::Receiver<Board>>,
+    pub receiver: Option<mpsc::Receiver<Box<Board>>>,
 }
 
 impl Game {
@@ -129,7 +129,7 @@ impl Game {
     }
 
     pub fn init_with_tick_thread() -> Self {
-        let (tx, rx) = mpsc::channel::<Board>();
+        let (tx, rx) = mpsc::channel::<Box<Board>>();
 
         let mut game = Game::default();
         game.receiver = Some(rx);
@@ -140,7 +140,7 @@ impl Game {
             println!("thread 2");
             loop {
                 game.game_tick(None);
-                tx.send(game.board).unwrap();
+                tx.send(Box::new(game.board)).unwrap();
                 thread::sleep(Duration::from_millis(100));
             }
         });
@@ -150,21 +150,10 @@ impl Game {
 
     pub fn get_latest_board(&self) -> Board {
         let rx = self.receiver.as_ref().unwrap();
-        println!("Obtained ref");
 
-        let mut iter = rx.iter();
-        //println!("Ara ara {:?}", iter.next().is_some());
-        //println!("- - - - - - - - - -");
-        return iter.next().expect("UWU");
+        let iter = rx.try_iter();
 
-        /*
-        println!("Iter length: {}", iter.count());
-        println!("Iter length: {}", rx.try_iter().count());
-        let iter = dbg!(rx.try_iter());
-        let latest = dbg!(iter.last()).unwrap();
-        println!("Got latest");
-
-        */
+        *iter.last().unwrap_or(Box::new(self.board))
     }
 
     pub fn update_board(&mut self) {

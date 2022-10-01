@@ -70,7 +70,7 @@ impl eframe::App for game::Game {
     }
 
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        //println!("\x1B[2J\x1B[1;1H");
+        println!("\x1B[2J\x1B[1;1H");
 
         egui::CentralPanel::default().show(ctx, |ui| {
             //ui.heading("Try to close the window");
