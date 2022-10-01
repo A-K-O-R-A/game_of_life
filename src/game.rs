@@ -141,7 +141,7 @@ impl Game {
             loop {
                 game.game_tick(None);
                 tx.send(game.board).unwrap();
-                thread::sleep(Duration::from_millis(1000));
+                thread::sleep(Duration::from_millis(100));
             }
         });
 
@@ -152,20 +152,19 @@ impl Game {
         let rx = self.receiver.as_ref().unwrap();
         println!("Obtained ref");
 
-        let iter = dbg!(rx.iter());
+        let mut iter = rx.iter();
+        //println!("Ara ara {:?}", iter.next().is_some());
+        //println!("- - - - - - - - - -");
+        return iter.next().expect("UWU");
 
-        println!("- - - - - - - - - -");
-        print!("- uwu -");
-        println!("Try recv: {:?}", rx.recv());
-        println!("- - - - - - - - - -");
+        /*
         println!("Iter length: {}", iter.count());
-
         println!("Iter length: {}", rx.try_iter().count());
         let iter = dbg!(rx.try_iter());
         let latest = dbg!(iter.last()).unwrap();
         println!("Got latest");
 
-        latest
+        */
     }
 
     pub fn update_board(&mut self) {
